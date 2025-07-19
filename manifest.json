@@ -19,5 +19,11 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage", "alarms", "notifications"]
+  "web_accessible_resources": [
+    {
+      "resources": ["notification.wav"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "permissions": ["storage", "alarms", "notifications", "offscreen"]
 }
