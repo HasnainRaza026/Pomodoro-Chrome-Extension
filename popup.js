@@ -6,7 +6,7 @@ startButton.addEventListener("click", () => {
   chrome.storage.local.get(["timerInterval", "isRunning"], (data) => {
     if (!(data?.isRunning || false)) {
       chrome.storage.local.set({
-        timerInterval: data?.timerInterval || 10,
+        timerInterval: data.timerInterval,
         isRunning: true,
       });
       startButton.textContent = "Pause";
@@ -18,7 +18,15 @@ startButton.addEventListener("click", () => {
 });
 
 resetButton.addEventListener("click", () => {
-  chrome.storage.local.set({ timerInterval: 10, isRunning: false });
+  chrome.storage.sync.get(["timerLength"], (data) => {
+    const timerLength = data?.timerLength || 25; // default to 25 minutes
+    const timerInterval = timerLength * 60; // convert minutes to seconds
+
+    chrome.storage.local.set({
+      timerInterval,
+      isRunning: false,
+    });
+  });
   timmer.textContent = "25:00";
   startButton.textContent = "Start";
 });
@@ -30,9 +38,8 @@ setInterval(() => {
 }, 1000);
 
 function updateTimerDisplay() {
-  chrome.storage.local.get(["timerInterval", "isRunning"], (data) => {
-    const timerInterval = data?.timerInterval || 10;
-    const isRunning = data?.isRunning || false;
+  chrome.storage.local.get(["timerInterval"], (data) => {
+    const timerInterval = data.timerInterval;
 
     const minutes = Math.floor(timerInterval / 60);
     const seconds = timerInterval % 60;

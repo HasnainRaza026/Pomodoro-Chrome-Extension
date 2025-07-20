@@ -1,3 +1,20 @@
+// set the initial timer interval and running state
+chrome.storage.sync.get(["timerLength"], (data) => {
+  const timerLength = data?.timerLength || 25; // default to 25 minutes
+
+  chrome.storage.local.get(["timerInterval", "isRunning"], (data) => {
+    const timerInterval = data?.timerInterval || timerLength * 60; // convert minutes to seconds
+    const isRunning = data?.isRunning || false;
+
+    chrome.storage.sync.set({ timerLength });
+
+    chrome.storage.local.set({
+      timerInterval,
+      isRunning,
+    });
+  });
+});
+
 chrome.alarms.create({
   periodInMinutes: 1 / 60, // 1 second
 });
@@ -30,7 +47,7 @@ async function playNotificationSound() {
 
 chrome.alarms.onAlarm.addListener(() => {
   chrome.storage.local.get(["timerInterval", "isRunning"], (data) => {
-    const timerInterval = data?.timerInterval || 10;
+    const timerInterval = data?.timerInterval || 25 * 60;
     const isRunning = data?.isRunning || false;
 
     if (isRunning) {

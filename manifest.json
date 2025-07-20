@@ -25,5 +25,7 @@
       "matches": ["<all_urls>"]
     }
   ],
+  "options_page": "options/options.html",
+
   "permissions": ["storage", "alarms", "notifications", "offscreen"]
 }
